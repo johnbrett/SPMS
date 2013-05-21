@@ -12,6 +12,6 @@ Currently I'm starting with a PHP and MySQL backend, using the [Slim framework](
 2. Import student.sql, this will give you the initial student table with some sample data.
 3. You can then test out the REST api by hitting <SERVER>/<PROJECT ROOT>/index.php/students/
 
-If anyone is interested in getting involved in this project or has any questions don't hesitate to ask.
+If you are interested in getting involved in this project or have any questions don't hesitate to ask.
 
-Many thanks to [ccoenraets](https://github.com/ccoenraets) have proved to be excellent learning resources.
+Many thanks to [ccoenraets](https://github.com/ccoenraets) whose work has proved to be an excellent learning resource.
