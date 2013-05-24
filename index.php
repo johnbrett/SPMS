@@ -7,156 +7,120 @@ $app = new \Slim\Slim();
 
 $app->get('/students', 'getStudents');
 $app->get('/students/:id', 'getStudent');
-//$app->get('/students/:id/reports', 'getReports');
-$app->post('/students/:id', 'updateStudent');
+$app->get('/students/:id/results', 'getStudentResults');
+
+$app->get('/labs', 'getLabs');
+$app->get('/labs/:id', 'getLabResults');
+
+$app->get('/results/', 'getAllResults');
 
 $app->run();
 
-function updateStudent($id) {
-    
-    if (isset($_POST['data'])){
-        $data = json_decode($_POST['data']);
-
-        if(json_last_error()==0){
-
-            try {
-
-                $name = $data->name;
-                $sql = sprintf("update student set firstName='%s' where id='%s'", $name, $id);
-                $db = getConnection();
-                $stmt = $db->query($sql);
-                $db = null;
-
-                echo getStudent($id);
-                
-
-            } catch(PDOException $e) {
-                echo '{"error":{"text":'. $e->getMessage() .'}}';
-            } catch(Exception $e) {
-                echo '{"error":{"text":"name undefined"}}';
-            }
-
-        } else {
-            echo '{"error":{"text":"Encountered Bad JSON"}}';
-        }
-    } else {
-        echo '{"error":{"text":"Data Empty"}}';
-    }
-}
-
 function getStudents() {
-
-    if (isset($_GET['name'])) {
-        return getStudentsByName($_GET['name']);
-    }
-
-    $sql = "select id, firstName, lastName " .
-            "from employee " .
-            "group by id order by lastName, firstName";
-    try {
-        $db = getConnection();
-        $stmt = $db->query($sql);
-        $students = $stmt->fetchAll(PDO::FETCH_OBJ);
-        $db = null;
-
-        // Include support for JSONP requests
-        if (!isset($_GET['callback'])) {
-            echo json_encode($students);
-        } else {
-            echo $_GET['callback'] . '(' . json_encode($students) . ');';
-        }
-
-    } catch(PDOException $e) {
-        echo '{"error":{"text":'. $e->getMessage() .'}}';
-    }
-    echo "go";
+    $sql = sprintf("SELECT * FROM all_students");
+    $rows = _getRows($sql);
+    echo _parseJSON($rows);
 }
 
 function getStudent($id) {
+    $sql = sprintf("SELECT * FROM all_students WHERE id='%s'",$id);
+    $row = _getRow($sql);
+    echo _parseJSON($row);
+}
 
-    $sql = "select * " .
-            "from student " .
-            "where id=:id";
+function getStudentResults($id){
+    $sql = sprintf("SELECT * FROM all_results WHERE student_id='%s'",$id);
+    $rows = _getRows($sql);
+
+    $results = array();
+    for($i=0; $i<count($rows); $i++){
+        $results[] = array(
+            "mark"=>$rows[$i]->mark,
+             "colour"=>$rows[$i]->colour
+             );
+    }
+    $return = array('student_id'=>$id, 'results'=>$results);
+    echo _parseJSON($return);
+}
+
+function getLabs(){
+    $sql = sprintf("SELECT id, start_date, finish_date FROM lab");
+    $rows = _getRows($sql);
+    echo _parseJSON($rows);
+}
+
+function getLabResults($id){
+
+    $sql = sprintf("SELECT * FROM all_results WHERE lab_id='%s'",$id);
+    $rows = _getRows($sql);
+
+    $results = array();
+    for($i=0; $i<count($rows); $i++){
+        $results[] = array(
+            "student_id"=>$rows[$i]->student_id,
+            "mark"=>$rows[$i]->mark,
+             "colour"=>$rows[$i]->colour
+             );
+    } 
+    echo _parseJSON($results);
+}
+
+function getAllResults(){
+    $sql = sprintf("SELECT DISTINCT student_id FROM `result` ORDER BY student_id ASC");
+    $rows = _getRows($sql);
+
+    $results = "";
+    for($i=0; $i<count($rows); $i++){
+        $results .= getStudentResults($rows[$i]->student_id);
+    }
+    echo $results;
+}
+
+
+
+function _getRow($sql){
     try {
-        $db = getConnection();
+        $db = _getConnection();
         $stmt = $db->prepare($sql);
-        $stmt->bindParam("id", $id);
         $stmt->execute();
-        $student = $stmt->fetchObject();
+        $result = $stmt->fetchObject();
         $db = null;
 
-        // Include support for JSONP requests
-        if (!isset($_GET['callback'])) {
-            echo json_encode($student);
-        } else {
-            echo $_GET['callback'] . '(' . json_encode($student) . ');';
-        }
+        return $result;
 
     } catch(PDOException $e) {
-        echo '{"error":{"text":'. $e->getMessage() .'}}';
+        return '{"error":{"text":'. $e->getMessage() .'}}';
     }
 }
 
-/*
-function getReports($id) {
-
-    $sql = "select e.id, e.firstName, e.lastName, e.title, count(r.id) reportCount " .
-            "from employee e left join employee r on r.managerId = e.id " .
-            "where e.managerId=:id " .
-            "group by e.id order by e.lastName, e.firstName";
-
+function _getRows($sql){
     try {
-        $db = getConnection();
-        $stmt = $db->prepare($sql);
-        $stmt->bindParam("id", $id);
-        $stmt->execute();
-        $students = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $db = _getConnection();
+        $stmt = $db->query($sql);
+        $result = $stmt->fetchAll(PDO::FETCH_OBJ);
         $db = null;
 
-        // Include support for JSONP requests
-        if (!isset($_GET['callback'])) {
-            echo json_encode($students);
-        } else {
-            echo $_GET['callback'] . '(' . json_encode($students) . ');';
-        }
+        return $result;
 
     } catch(PDOException $e) {
-        echo '{"error":{"text":'. $e->getMessage() .'}}';
-    }
-}
-*/
-
-function getStudentsByName($name) {
-    $sql = "select id, firstName, lastName " .
-            "from employee " .
-            "WHERE UPPER(CONCAT(firstName, ' ', lastName)) LIKE :name " .
-            "group by id order by lastName, firstName";
-    try {
-        $db = getConnection();
-        $stmt = $db->prepare($sql);
-        $name = "%".$name."%";
-        $stmt->bindParam("name", $name);
-        $stmt->execute();
-        $students = $stmt->fetchAll(PDO::FETCH_OBJ);
-        $db = null;
-
-        // Include support for JSONP requests
-        if (!isset($_GET['callback'])) {
-            echo json_encode($students);
-        } else {
-            echo $_GET['callback'] . '(' . json_encode($students) . ');';
-        }
-
-    } catch(PDOException $e) {
-        echo '{"error":{"text":'. $e->getMessage() .'}}'; 
+        return '{"error":{"text":'. $e->getMessage() .'}}';
     }
 }
 
-function getConnection() {
+function _parseJSON($array){
+    // Include support for JSONP requests
+    if (!isset($_GET['callback'])) {
+        return json_encode($array);
+    } else {
+        return $_GET['callback'] . '(' . json_encode($array) . ');';
+    }
+}
+
+function _getConnection() {
     $dbhost="127.0.0.1";
     $dbuser="root";
     $dbpass="";
-    $dbname="directory";
+    $dbname="spms";
     $dbh = new PDO("mysql:host=$dbhost;dbname=$dbname", $dbuser, $dbpass);  
     $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     return $dbh;
