@@ -2,19 +2,50 @@
 require 'Slim/Slim.php';
 
 \Slim\Slim::registerAutoloader();
-
 $app = new \Slim\Slim();
 
-$app->get('/students', 'getStudents');
-$app->get('/students/:id', 'getStudent');
-$app->get('/students/:id/results', 'getStudentResults');
+$GLOBALS['debug'] = true;
 
-$app->get('/labs', 'getLabs');
-$app->get('/labs/:id', 'getLabResults');
+$app->post('/auth', 'createSession');
+$app->get('/auth', 'checkSession');
 
-$app->get('/results/', 'getAllResults');
+$app->get('/students', 'checkSession', 'getStudents');
+$app->get('/students/:id', 'checkSession', 'getStudent');
+$app->get('/students/:id/results', 'checkSession', 'getStudentResults');
+
+$app->get('/labs', 'checkSession', 'getLabs');
+$app->get('/labs/:id', 'checkSession', 'getLabResults');
+
+$app->get('/results', 'checkSession', 'getAllResults');
 
 $app->run();
+
+function checkSession(){
+    session_start();
+
+    $session = ( isset($_SESSION['logged_in']) ? $_SESSION['logged_in'] : null ) || $GLOBALS['debug'];
+    if(!$session){
+        die('{"error":{"text":"User is not logged in"}}');
+    }
+}
+
+function createSession(){
+    session_start();
+    if(isset($_POST['PHP_AUTH_USER']) && isset($_POST['PHP_AUTH_PW'])){
+        $sql = sprintf("SELECT username, password FROM admin WHERE username='%s' AND password='%s'", $_POST['PHP_AUTH_USER'], $_POST['PHP_AUTH_PW']);
+        $row = _getRow($sql);
+        
+        if($row){
+            $_SESSION['logged_in'] = true;
+            echo '{"message":"User '.strtoupper($row->username).' logged in"}';
+        } else {
+            unset($_SESSION['logged_in']);
+            echo '{"message":"User logged out"}';
+        }
+    } else {
+        die('{"error":{"text":"Either no username or password specified"}}');
+    }
+}
 
 function getStudents() {
     $sql = sprintf("SELECT * FROM all_students");
