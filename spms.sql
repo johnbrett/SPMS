@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: May 25, 2013 at 03:57 PM
+-- Generation Time: May 27, 2013 at 08:23 PM
 -- Server version: 5.5.27
 -- PHP Version: 5.4.7
 
@@ -54,6 +54,7 @@ INSERT INTO `admin` (`id`, `firstName`, `secondName`, `username`, `password`, `e
 --
 CREATE TABLE IF NOT EXISTS `all_results` (
 `student_id` int(11)
+,`group` char(1)
 ,`lab_id` int(11)
 ,`mark` int(3)
 ,`colour` char(10)
@@ -69,6 +70,7 @@ CREATE TABLE IF NOT EXISTS `all_students` (
 ,`lastName` varchar(30)
 ,`module` varchar(10)
 ,`email` varchar(50)
+,`group` char(1)
 );
 -- --------------------------------------------------------
 
@@ -104,7 +106,7 @@ CREATE TABLE IF NOT EXISTS `result` (
   `mark` int(3) NOT NULL,
   `colour` char(10) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
 
 --
 -- Dumping data for table `result`
@@ -114,7 +116,10 @@ INSERT INTO `result` (`id`, `student_id`, `lab_id`, `mark`, `colour`) VALUES
 (1, '1', 1, 50, 'green'),
 (2, '2', 1, 40, 'yellow'),
 (3, '1', 2, 70, 'green'),
-(4, '2', 2, 10, 'red');
+(4, '2', 2, 10, 'red'),
+(5, '3', 3, 70, 'green'),
+(6, '1', 3, 90, 'orange'),
+(7, '3', 2, 40, 'orange');
 
 -- --------------------------------------------------------
 
@@ -128,6 +133,7 @@ CREATE TABLE IF NOT EXISTS `student` (
   `lastName` varchar(30) NOT NULL,
   `module` varchar(10) NOT NULL,
   `email` varchar(50) NOT NULL,
+  `Group` char(1) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -135,17 +141,17 @@ CREATE TABLE IF NOT EXISTS `student` (
 -- Dumping data for table `student`
 --
 
-INSERT INTO `student` (`id`, `firstName`, `lastName`, `module`, `email`) VALUES
-(1, 'James', 'King', 'CS101', 'jking@fakemail.com'),
-(2, 'Julie', 'Taylor', 'CS101', 'jtaylor@fakemail.com'),
-(3, 'John', 'Williams', 'CS101', 'jwilliams@fakemail.com'),
-(4, 'Eugene', 'Lee', 'CS101', 'elee@fakemail.com'),
-(5, 'Paul', 'Jones', 'CS102', 'pjones@fakemail.com'),
-(6, 'Ray', 'Moore', 'CS102', 'rmooe@fakemail.com'),
-(7, 'Paula', 'Gates', 'CS102', 'pgates@fakemail.com'),
-(8, 'Lisa', 'Wong', 'CS102', 'lwong@fakemail.com'),
-(9, 'Gary', 'Donovan', 'CS101', 'gdonovan@fakemail.com'),
-(10, 'John', 'Byrne', 'CS101', 'jbyrne@fakemail.com');
+INSERT INTO `student` (`id`, `firstName`, `lastName`, `module`, `email`, `Group`) VALUES
+(1, 'James', 'King', 'CS101', 'jking@fakemail.com', 'A'),
+(2, 'Julie', 'Taylor', 'CS101', 'jtaylor@fakemail.com', 'A'),
+(3, 'John', 'Williams', 'CS101', 'jwilliams@fakemail.com', 'A'),
+(4, 'Eugene', 'Lee', 'CS101', 'elee@fakemail.com', 'A'),
+(5, 'Paul', 'Jones', 'CS102', 'pjones@fakemail.com', 'A'),
+(6, 'Ray', 'Moore', 'CS102', 'rmooe@fakemail.com', 'B'),
+(7, 'Paula', 'Gates', 'CS102', 'pgates@fakemail.com', 'B'),
+(8, 'Lisa', 'Wong', 'CS102', 'lwong@fakemail.com', 'B'),
+(9, 'Gary', 'Donovan', 'CS101', 'gdonovan@fakemail.com', 'B'),
+(10, 'John', 'Byrne', 'CS101', 'jbyrne@fakemail.com', 'B');
 
 -- --------------------------------------------------------
 
@@ -154,7 +160,7 @@ INSERT INTO `student` (`id`, `firstName`, `lastName`, `module`, `email`) VALUES
 --
 DROP TABLE IF EXISTS `all_results`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `all_results` AS select `s`.`id` AS `student_id`,`l`.`id` AS `lab_id`,`r`.`mark` AS `mark`,`r`.`colour` AS `colour` from ((`student` `s` join `lab` `l`) join `result` `r`) where ((`r`.`student_id` = `s`.`id`) and (`r`.`lab_id` = `l`.`id`)) order by `s`.`firstName`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `all_results` AS select `s`.`id` AS `student_id`,`s`.`Group` AS `group`,`r`.`lab_id` AS `lab_id`,`r`.`mark` AS `mark`,`r`.`colour` AS `colour` from (`student` `s` join `result` `r`) where (`s`.`id` = `r`.`student_id`) order by `s`.`id`,`r`.`lab_id`;
 
 -- --------------------------------------------------------
 
@@ -163,7 +169,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 --
 DROP TABLE IF EXISTS `all_students`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `all_students` AS select `student`.`id` AS `id`,`student`.`firstName` AS `firstName`,`student`.`lastName` AS `lastName`,`student`.`module` AS `module`,`student`.`email` AS `email` from `student` order by `student`.`firstName`,`student`.`lastName`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `all_students` AS select `student`.`id` AS `id`,`student`.`firstName` AS `firstName`,`student`.`lastName` AS `lastName`,`student`.`module` AS `module`,`student`.`email` AS `email`,`student`.`Group` AS `group` from `student` order by `student`.`firstName`,`student`.`lastName`;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

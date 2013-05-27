@@ -9,14 +9,17 @@ $GLOBALS['debug'] = true;
 $app->post('/auth', 'createSession');
 $app->get('/auth', 'checkSession');
 
-$app->get('/students', 'checkSession', 'getStudents');
-$app->get('/students/:id', 'checkSession', 'getStudent');
-$app->get('/students/:id/results', 'checkSession', 'getStudentResults');
+$app->get('/student', 'checkSession', 'getStudents');
+$app->get('/student/:id', 'checkSession', 'getStudent');
+$app->get('/student/:id/result', 'checkSession', 'getStudentResult');
+$app->post('/student/:id/result', 'checkSession', 'addStudentResult');
 
-$app->get('/labs', 'checkSession', 'getLabs');
-$app->get('/labs/:id', 'checkSession', 'getLabResults');
+$app->get('/lab', 'checkSession', 'getLabs');
+$app->get('/lab/:id', 'checkSession', 'getLabResults');
 
-$app->get('/results', 'checkSession', 'getAllResults');
+$app->get('/result', 'checkSession', 'getAllResults');
+
+$app->get('/group/:id', 'checkSession', 'getGroupResults');
 
 $app->run();
 
@@ -31,6 +34,7 @@ function checkSession(){
 
 function createSession(){
     session_start();
+
     if(isset($_POST['PHP_AUTH_USER']) && isset($_POST['PHP_AUTH_PW'])){
         $sql = sprintf("SELECT username, password FROM admin WHERE username='%s' AND password='%s'", $_POST['PHP_AUTH_USER'], $_POST['PHP_AUTH_PW']);
         $row = _getRow($sql);
@@ -59,7 +63,7 @@ function getStudent($id) {
     echo _parseJSON($row);
 }
 
-function getStudentResults($id){
+function getStudentResult($id){
     $sql = sprintf("SELECT * FROM all_results WHERE student_id='%s'",$id);
     $rows = _getRows($sql);
 
@@ -72,6 +76,22 @@ function getStudentResults($id){
     }
     $return = array('student_id'=>$id, 'results'=>$results);
     echo _parseJSON($return);
+}
+
+function addStudentResult($id){
+    if(isset($_POST['lab_id']) && isset($_POST['mark']) && isset($_POST['colour'])){
+        $lab_id = $_POST['lab_id'];
+        $mark = $_POST['mark'];
+        $colour = $_POST['colour'];
+
+        $sql = sprintf("INSERT INTO `spms`.`result` (`id`, `student_id`, `lab_id`, `mark`, `colour`) 
+                        VALUES (NULL, '%s', '%s', '%s', '%s')", $id, $lab_id, $mark, $colour);
+
+        $result = _addRow($sql);
+        echo $result;
+    } else {
+        echo '{"error":{"text":"All required values not set, values required are: lab, mark, colour"}}';
+    }
 }
 
 function getLabs(){
@@ -101,10 +121,18 @@ function getAllResults(){
     $rows = _getRows($sql);
 
     $results = "";
+    echo "[";
     for($i=0; $i<count($rows); $i++){
-        $results .= getStudentResults($rows[$i]->student_id);
+        echo ($i > 0 && $i<count($rows)) ? "," : "";
+        getStudentResult($rows[$i]->student_id);
     }
-    echo $results;
+    echo "]";
+}
+
+function getGroupResults($id){
+    $sql = sprintf("SELECT * FROM `all_results` WHERE `group` = '%s' order by student_id, lab_id", $id);
+    $rows = _getRows($sql);
+    echo _parseJSON($rows);
 }
 
 
@@ -132,6 +160,20 @@ function _getRows($sql){
         $db = null;
 
         return $result;
+
+    } catch(PDOException $e) {
+        return '{"error":{"text":'. $e->getMessage() .'}}';
+    }
+}
+
+function _addRow($sql){
+    try {
+        $db = _getConnection();
+        $stmt = $db->prepare($sql);
+        $stmt->execute();
+        $db = null;
+
+        return '{"message":"Row added successfully"}';
 
     } catch(PDOException $e) {
         return '{"error":{"text":'. $e->getMessage() .'}}';
