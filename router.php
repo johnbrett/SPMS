@@ -21,12 +21,14 @@ $app->get('/result', 'checkSession', 'getAllResults');
 
 $app->get('/group/:id', 'checkSession', 'getGroupResults');
 
+$app->post('/admin/update', 'checkSession', 'updateAdminPassword');
+
 $app->run();
 
 function checkSession(){
     session_start();
 
-    $session = ( isset($_SESSION['logged_in']) ? $_SESSION['logged_in'] : null ) || $GLOBALS['debug'];
+    $session = ( isset($_SESSION['user']) ? $_SESSION['user'] : null ) || $GLOBALS['debug'];
     if(!$session){
         die('{"error":{"text":"User is not logged in"}}');
     }
@@ -40,10 +42,10 @@ function createSession(){
         $row = _getRow($sql);
         
         if($row){
-            $_SESSION['logged_in'] = true;
+            $_SESSION['user'] = $_POST['PHP_AUTH_USER'];
             echo '{"message":"User '.strtoupper($row->username).' logged in"}';
         } else {
-            unset($_SESSION['logged_in']);
+            unset($_SESSION['user']);
             echo '{"message":"User logged out"}';
         }
     } else {
@@ -135,6 +137,19 @@ function getGroupResults($id){
     echo _parseJSON($rows);
 }
 
+function updateAdminPassword(){
+
+    if(isset($_POST['password'])){
+        $username = $_SESSION['user'];
+        $password = $_POST['password'];
+
+        $sql = sprintf("UPDATE admin SET password='%s' WHERE username = '%' " , $password, $username);
+        $result = _updateRow($sql);
+        echo $result;
+    } else {
+        echo '{"error":{"text":"All required values not set, values required are: password"}}';
+    }
+}
 
 
 function _getRow($sql){
@@ -174,6 +189,20 @@ function _addRow($sql){
         $db = null;
 
         return '{"message":"Row added successfully"}';
+
+    } catch(PDOException $e) {
+        return '{"error":{"text":'. $e->getMessage() .'}}';
+    }
+}
+
+function _updateRow($sql){
+    try {
+        $db = _getConnection();
+        $stmt = $db->prepare($sql);
+        $stmt->execute();
+        $db = null;
+
+        return '{"message":"Row updated successfully"}';
 
     } catch(PDOException $e) {
         return '{"error":{"text":'. $e->getMessage() .'}}';

@@ -10,7 +10,7 @@ Currently I'm starting with a PHP and MySQL backend, using the [Slim framework](
 
 1. Create a MySQL database name "spms".
 2. Import spms.sql, this will give you the initial student, lab, result, admin tables with some sample data, and the all_results, and all_students views.
-3. You can then test out the REST api by hitting <SERVER>/<PROJECT ROOT>/index.php/students
+3. You can then test out the REST api by hitting <SERVER>/SPMS/router.php/student
 
 Note: Authentication is disabled by default, to enable change $GLOBALS['debug'] to be false.
 
