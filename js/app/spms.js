@@ -1,5 +1,5 @@
 var spms = angular.module('spms', ['restangular']).config(function(RestangularProvider, $httpProvider){
-		RestangularProvider.setBaseUrl('./index.php')
+		RestangularProvider.setBaseUrl('./router.php')
 		$httpProvider.defaults.headers.post  = {'Content-Type': 'application/x-www-form-urlencoded'};
 	})
 
