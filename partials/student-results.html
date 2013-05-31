@@ -1,0 +1,20 @@
+<form>
+	<select ng-model="selectedStudent" ng-options="student.firstName + ' ' + student.lastName + ' ' + student.id for student in students" data-ng-init="getStudents()" ng-change="getStudentResults(selectedStudent.id)"></select>
+<form>
+<div>
+	{{selectedStudent.firstName}} {{selectedStudent.lastName}} {{selectedStudent.id}}</br>
+	{{selectedStudent.email}}</br>
+	{{selectedStudent.module}}</br>
+</div>
+<table id="resultTable" ng-show="studentResults">
+	<thrad>
+		<tr>
+			<th style="padding-right: 0.5em">Lab</th><th style="padding: 0.5em">Mark</th><th style="padding: 0.5em">Colour</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="studentResult in studentResults">
+				<td>{{$index + 1}}</td><td>{{studentResult.mark}}</td><td>{{studentResult.colour}}</td>
+		</tr>
+	</tbody>
+</table>

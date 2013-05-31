@@ -9,38 +9,38 @@
 	<script type="text/javascript" src="./js/app/spms.js"></script>
 </head>
 <body ng-app='spms'>
-<div ng-controller="RESTCtrl">
+	<div ng-controller="RESTCtrl">
 
-<div>{{students}}</div> 
-<button class="btn" ng-click="getStudents()">Get Students</button>
+	<div>{{students}}</div> 
+	<button class="btn" ng-click="getStudents()">Get Students</button>
 
-<div>{{student}}</div> 
-<button class="btn" ng-click="getStudents(1)">Get Student(1)</button>
+	<div>{{student}}</div> 
+	<button class="btn" ng-click="getStudents(1)">Get Student(1)</button>
 
-<div>{{labs}}</div> 
-<button class="btn" ng-click="getLabs()">Get Labs</button>
+	<div>{{labs}}</div> 
+	<button class="btn" ng-click="getLabs()">Get Labs</button>
 
-<div>{{lab}}</div> 
-<button class="btn" ng-click="getLabs(1)">Get Lab(1)</button>
+	<div>{{lab}}</div> 
+	<button class="btn" ng-click="getLabs(1)">Get Lab(1)</button>
 
-<div>{{results}}</div> 
-<button class="btn" ng-click="getResults()">Get All Results</button>
+	<div>{{results}}</div> 
+	<button class="btn" ng-click="getResults()">Get All Results</button>
 
-<div>{{studentResults}}</div> 
-<button class="btn" ng-click="getStudentResults(1)">Get Student Results(1)</button>
+	<div>{{studentResults}}</div> 
+	<button class="btn" ng-click="getStudentResults(1)">Get Student Results(1)</button>
 
-<div>{{addResponse}}</div> 
-<button class="btn" ng-click="addResults(1, '2', '75', 'green')">Add Results(1, 2, 75, 'green')</button>
+	<div>{{addResponse}}</div> 
+	<button class="btn" ng-click="addResults(1, '2', '75', 'green')">Add Results(1, 2, 75, 'green')</button>
 
-<div>{{userSession}}</div> 
-<button class="btn" ng-click="createSession('jbrett', 'password')">Login(jbrett, password)</button>
+	<div>{{userSession}}</div> 
+	<button class="btn" ng-click="createSession('jbrett', 'password')">Login(jbrett, password)</button> {{userSession.valid}}
 
-<div>{{userSession}}</div> 
-<button class="btn" ng-click="createSession()">Logout()</button>
+	<div>{{userSession}}</div> 
+	<button class="btn" ng-click="createSession()">Logout()</button>
 
-<div>{{validSession}}</div> 
-<button class="btn" ng-click="checkSession()">Check Session()</button>
+	<div>{{validSession}}</div> 
+	<button class="btn" ng-click="checkSession()">Check Session()</button>
 
-</div>
+	</div>
 </body>
 </html>

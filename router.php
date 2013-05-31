@@ -4,7 +4,7 @@ require 'Slim/Slim.php';
 \Slim\Slim::registerAutoloader();
 $app = new \Slim\Slim();
 
-$GLOBALS['debug'] = true;
+$GLOBALS['debug'] = false;
 
 $app->post('/auth', 'createSession');
 $app->get('/auth', 'checkSession');
@@ -43,10 +43,10 @@ function createSession(){
         
         if($row){
             $_SESSION['user'] = $_POST['PHP_AUTH_USER'];
-            echo '{"message":"User '.strtoupper($row->username).' logged in"}';
+            echo '{"valid":"true","message":"User '.strtoupper($row->username).' logged in"}';
         } else {
             unset($_SESSION['user']);
-            echo '{"message":"User logged out"}';
+            echo '{"valid":"false","message":"User logged out"}';
         }
     } else {
         die('{"error":{"text":"Either no username or password specified"}}');

@@ -3,13 +3,25 @@ var spms = angular.module('spms', ['restangular']).config(function(RestangularPr
 		$httpProvider.defaults.headers.post  = {'Content-Type': 'application/x-www-form-urlencoded'};
 	})
 
+//TODO -  split up controller logic into explicit controllers for their functions
 spms.controller('RESTCtrl', function($scope, Restangular){
 
+	$scope.templates = 
+		[ { name: 'auth', url: 'partials/auth.html'}
+		, { name: 'student-results', url: 'partials/student-results.html'} ]
+	$scope.template = $scope.templates[0]
+
 	$scope.createSession = function(username, password)	{
-		if(username && password)
+		if(username && password) {
 			$scope.userSession = Restangular.all("auth").post("PHP_AUTH_USER=" + username +"&PHP_AUTH_PW=" + password)
-		else
+			//TODO - Need logic here to validate log in
+			$scope.template = $scope.templates[1]
+			}
+		else {
 			$scope.userSession = Restangular.all("auth").post("PHP_AUTH_USER=&PHP_AUTH_PW=")
+			//TODO - Need logic here to validate log in
+			$scope.template = $scope.templates[1]
+		}
 	}
 
 	$scope.checkSession = function(){
