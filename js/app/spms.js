@@ -12,16 +12,15 @@ spms.controller('RESTCtrl', function($scope, Restangular){
 	$scope.template = $scope.templates[0]
 
 	$scope.createSession = function(username, password)	{
-		if(username && password) {
-			$scope.userSession = Restangular.all("auth").post("PHP_AUTH_USER=" + username +"&PHP_AUTH_PW=" + password)
-			//TODO - Need logic here to validate log in
-			$scope.template = $scope.templates[1]
-			}
+		if(username && password)
+			Restangular.all("auth").post("PHP_AUTH_USER=" + username +"&PHP_AUTH_PW=" + password).then(function(result){
+				if(result.valid === 'true') {
+					$scope.userSession = result
+					$scope.template = $scope.templates[1]
+				}
+			})
 		else {
-			$scope.userSession = Restangular.all("auth").post("PHP_AUTH_USER=&PHP_AUTH_PW=")
-			//TODO - Need logic here to validate log in
-			$scope.template = $scope.templates[1]
-		}
+			$scope.userSession = Restangular.all("auth").post("PHP_AUTH_USER=&PHP_AUTH_PW=")		}
 	}
 
 	$scope.checkSession = function(){
