@@ -24,10 +24,22 @@
 <button class="btn" ng-click="getLabs(1)">Get Lab(1)</button>
 
 <div>{{results}}</div> 
-<button class="btn" ng-click="getResults()">Get Results</button>
+<button class="btn" ng-click="getResults()">Get All Results</button>
+
+<div>{{studentResults}}</div> 
+<button class="btn" ng-click="getStudentResults(1)">Get Student Results(1)</button>
 
 <div>{{addResponse}}</div> 
 <button class="btn" ng-click="addResults(1, '2', '75', 'green')">Add Results(1, 2, 75, 'green')</button>
+
+<div>{{userSession}}</div> 
+<button class="btn" ng-click="createSession('jbrett', 'password')">Login(jbrett, password)</button>
+
+<div>{{userSession}}</div> 
+<button class="btn" ng-click="createSession()">Logout()</button>
+
+<div>{{validSession}}</div> 
+<button class="btn" ng-click="checkSession()">Check Session()</button>
 
 </div>
 </body>

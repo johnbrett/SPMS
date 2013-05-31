@@ -72,12 +72,12 @@ function getStudentResult($id){
     $results = array();
     for($i=0; $i<count($rows); $i++){
         $results[] = array(
+            "student_id"=>$rows[$i]->student_id,
             "mark"=>$rows[$i]->mark,
              "colour"=>$rows[$i]->colour
              );
     }
-    $return = array('student_id'=>$id, 'results'=>$results);
-    echo _parseJSON($return);
+    echo _parseJSON($results);
 }
 
 function addStudentResult($id){
@@ -123,12 +123,10 @@ function getAllResults(){
     $rows = _getRows($sql);
 
     $results = "";
-    echo "[";
     for($i=0; $i<count($rows); $i++){
         echo ($i > 0 && $i<count($rows)) ? "," : "";
         getStudentResult($rows[$i]->student_id);
     }
-    echo "]";
 }
 
 function getGroupResults($id){
