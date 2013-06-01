@@ -16,9 +16,7 @@ spms.controller('RESTCtrl', function($scope, Restangular){
 			if(result.valid === 'true') {
 				$scope.userSession = result
 				$scope.template = $scope.templates[1]
-				$scope.loginMessage = "User Login Failed"
 			} else {
-				$scope.userSession = Restangular.all("auth").post("PHP_AUTH_USER=&PHP_AUTH_PW=")
 				$scope.loginMessage = "User Login Failed"		
 			}
 		})
