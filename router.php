@@ -4,7 +4,7 @@ require 'Slim/Slim.php';
 \Slim\Slim::registerAutoloader();
 $app = new \Slim\Slim();
 
-$GLOBALS['debug'] = false;
+$GLOBALS['debug'] = true;
 
 $app->post('/auth', 'createSession');
 $app->get('/auth', 'checkSession');
@@ -19,7 +19,8 @@ $app->get('/lab/:id', 'checkSession', 'getLabResults');
 
 $app->get('/result', 'checkSession', 'getAllResults');
 
-$app->get('/group/:id', 'checkSession', 'getGroupResults');
+$app->get('/group/:id', 'checkSession', 'getGroup');
+$app->get('/group/:id/result', 'checkSession', 'getGroupResults');
 
 $app->post('/admin/update', 'checkSession', 'updateAdminPassword');
 
@@ -44,7 +45,9 @@ function createSession(){
         if($row){
             $_SESSION['user'] = $_POST['PHP_AUTH_USER'];
             echo '{"valid":"true","message":"User '.strtoupper($row->username).' logged in"}';
-        } else {
+        } else if ($GLOBALS['debug']) {
+            echo '{"valid":"true","message":"User ADMIN logged in"}';
+        }  else {
             unset($_SESSION['user']);
             echo '{"valid":"false","message":"User logged out"}';
         }
@@ -66,18 +69,9 @@ function getStudent($id) {
 }
 
 function getStudentResult($id){
-    $sql = sprintf("SELECT * FROM all_results WHERE student_id='%s'",$id);
+    $sql = sprintf("SELECT lab_id, mark, colour FROM result r RIGHT OUTER JOIN lab l on r.lab_id = l.id and student_id='%s'",$id); // OUTER Needed to give empty lab results
     $rows = _getRows($sql);
-
-    $results = array();
-    for($i=0; $i<count($rows); $i++){
-        $results[] = array(
-            "student_id"=>$rows[$i]->student_id,
-            "mark"=>$rows[$i]->mark,
-             "colour"=>$rows[$i]->colour
-             );
-    }
-    echo _parseJSON($results);
+    echo _parseJSON($rows);
 }
 
 function addStudentResult($id){
@@ -103,34 +97,25 @@ function getLabs(){
 }
 
 function getLabResults($id){
-
-    $sql = sprintf("SELECT * FROM all_results WHERE lab_id='%s'",$id);
+    $sql = sprintf("SELECT student_id, mark, colour FROM all_results WHERE lab_id='%s'",$id);
     $rows = _getRows($sql);
-
-    $results = array();
-    for($i=0; $i<count($rows); $i++){
-        $results[] = array(
-            "student_id"=>$rows[$i]->student_id,
-            "mark"=>$rows[$i]->mark,
-             "colour"=>$rows[$i]->colour
-             );
-    } 
-    echo _parseJSON($results);
+    echo _parseJSON($rows);
 }
 
 function getAllResults(){
-    $sql = sprintf("SELECT DISTINCT student_id FROM `result` ORDER BY student_id ASC");
+    $sql = sprintf("SELECT * FROM all_results ORDER BY student_id ASC");
     $rows = _getRows($sql);
+    echo _parseJSON($rows);
+}
 
-    $results = "";
-    for($i=0; $i<count($rows); $i++){
-        echo ($i > 0 && $i<count($rows)) ? "," : "";
-        getStudentResult($rows[$i]->student_id);
-    }
+function getGroup($id){
+    $sql = sprintf("SELECT * FROM `all_students` WHERE `group` = '%s'", $id);
+    $rows = _getRows($sql);
+    echo _parseJSON($rows);
 }
 
 function getGroupResults($id){
-    $sql = sprintf("SELECT * FROM `all_results` WHERE `group` = '%s' order by student_id, lab_id", $id);
+    $sql = sprintf("SELECT student_id, lab_id, mark, colour FROM `all_results` r RIGHT OUTER JOIN lab l on r.lab_id = l.id WHERE `group` = '%s' order by student_id, lab_id", $id);
     $rows = _getRows($sql);
     echo _parseJSON($rows);
 }

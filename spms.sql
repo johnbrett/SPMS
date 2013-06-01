@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: May 27, 2013 at 08:23 PM
+-- Generation Time: Jun 01, 2013 at 05:11 PM
 -- Server version: 5.5.27
 -- PHP Version: 5.4.7
 
@@ -90,8 +90,9 @@ CREATE TABLE IF NOT EXISTS `lab` (
 --
 
 INSERT INTO `lab` (`id`, `start_date`, `finish_date`) VALUES
-(1, '2013-05-24 17:12:35', '2013-05-24 17:12:35'),
-(2, '2013-05-24 17:12:46', '2013-05-24 17:12:35');
+(1, '2013-05-17 17:12:35', '2013-05-24 17:12:35'),
+(2, '2013-05-24 12:33:48', '2013-05-31 17:12:35'),
+(3, '2013-05-31 12:33:14', '2013-06-07 16:43:36');
 
 -- --------------------------------------------------------
 
@@ -105,8 +106,9 @@ CREATE TABLE IF NOT EXISTS `result` (
   `lab_id` int(11) NOT NULL,
   `mark` int(3) NOT NULL,
   `colour` char(10) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `student_id` (`student_id`,`lab_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=33 ;
 
 --
 -- Dumping data for table `result`
@@ -119,7 +121,26 @@ INSERT INTO `result` (`id`, `student_id`, `lab_id`, `mark`, `colour`) VALUES
 (4, '2', 2, 10, 'red'),
 (5, '3', 3, 70, 'green'),
 (6, '1', 3, 90, 'orange'),
-(7, '3', 2, 40, 'orange');
+(7, '3', 2, 40, 'orange'),
+(12, '2', 3, 70, 'green'),
+(13, '4', 1, 50, 'orange'),
+(14, '4', 3, 50, 'orange'),
+(15, '5', 2, 30, 'red'),
+(16, '5', 3, 30, 'red'),
+(17, '6', 1, 70, 'green'),
+(18, '6', 2, 50, 'orange'),
+(19, '6', 3, 30, 'red'),
+(22, '7', 1, 30, 'red'),
+(23, '7', 2, 50, 'orange'),
+(24, '7', 3, 75, 'green'),
+(25, '8', 1, 70, 'green'),
+(26, '8', 2, 70, 'green'),
+(27, '8', 3, 70, 'green'),
+(28, '9', 1, 50, 'orange'),
+(29, '9', 2, 50, 'orange'),
+(30, '10', 1, 30, 'red'),
+(31, '10', 2, 30, 'red'),
+(32, '10', 3, 30, 'red');
 
 -- --------------------------------------------------------
 

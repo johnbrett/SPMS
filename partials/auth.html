@@ -2,5 +2,6 @@
         <h2 class="form-signin-heading">Please sign in</h2>
         <input type="text" class="input-block-level" placeholder="Username" ng-model="username">
         <input type="password" class="input-block-level" placeholder="Password" ng-model="password">
+        <label class="error">{{loginMessage}}</label>
         <button class="btn btn-large btn-primary" ng-click="createSession(username, password)" type="submit">Sign in</button>
 </form>

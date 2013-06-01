@@ -12,15 +12,16 @@ spms.controller('RESTCtrl', function($scope, Restangular){
 	$scope.template = $scope.templates[0]
 
 	$scope.createSession = function(username, password)	{
-		if(username && password)
-			Restangular.all("auth").post("PHP_AUTH_USER=" + username +"&PHP_AUTH_PW=" + password).then(function(result){
-				if(result.valid === 'true') {
-					$scope.userSession = result
-					$scope.template = $scope.templates[1]
-				}
-			})
-		else {
-			$scope.userSession = Restangular.all("auth").post("PHP_AUTH_USER=&PHP_AUTH_PW=")		}
+		Restangular.all("auth").post("PHP_AUTH_USER=" + username +"&PHP_AUTH_PW=" + password).then(function(result){
+			if(result.valid === 'true') {
+				$scope.userSession = result
+				$scope.template = $scope.templates[1]
+				$scope.loginMessage = "User Login Failed"
+			} else {
+				$scope.userSession = Restangular.all("auth").post("PHP_AUTH_USER=&PHP_AUTH_PW=")
+				$scope.loginMessage = "User Login Failed"		
+			}
+		})
 	}
 
 	$scope.checkSession = function(){
@@ -49,7 +50,7 @@ spms.controller('RESTCtrl', function($scope, Restangular){
 	}
 
 	$scope.getStudentResults = function(id) {
-			$scope.studentResults = Restangular.one("student", id).all("result").getList()
+		$scope.studentResults = Restangular.one("student", id).all("result").getList()
 	}
 
 	$scope.addResults = function(id, lab_id, mark, colour)	{
