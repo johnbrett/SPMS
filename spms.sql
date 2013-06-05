@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 01, 2013 at 05:11 PM
+-- Generation Time: Jun 06, 2013 at 12:55 AM
 -- Server version: 5.5.27
 -- PHP Version: 5.4.7
 
@@ -108,7 +108,7 @@ CREATE TABLE IF NOT EXISTS `result` (
   `colour` char(10) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `student_id` (`student_id`,`lab_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=33 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=45 ;
 
 --
 -- Dumping data for table `result`
@@ -116,7 +116,7 @@ CREATE TABLE IF NOT EXISTS `result` (
 
 INSERT INTO `result` (`id`, `student_id`, `lab_id`, `mark`, `colour`) VALUES
 (1, '1', 1, 50, 'green'),
-(2, '2', 1, 40, 'yellow'),
+(2, '2', 1, 40, 'orange'),
 (3, '1', 2, 70, 'green'),
 (4, '2', 2, 10, 'red'),
 (5, '3', 3, 70, 'green'),

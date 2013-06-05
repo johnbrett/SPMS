@@ -17,8 +17,16 @@ spms.controller('RESTCtrl', function($scope, Restangular){
 				$scope.userSession = result
 				$scope.template = $scope.templates[1]
 			} else {
-				$scope.loginMessage = "User Login Failed"		
+				$scope.loginMessage = "User Login Failed"
+				$scope.template = $scope.templates[0]		
 			}
+		})
+	}
+
+	$scope.destroySession = function() {
+		Restangular.all("auth").post("PHP_AUTH_USER=&PHP_AUTH_PW=").then(function(result){
+			$scope.loginMessage = "You are now logged out"
+			$scope.template = $scope.templates[0]	
 		})
 	}
 

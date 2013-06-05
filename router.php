@@ -146,7 +146,7 @@ function _getRow($sql){
         return $result;
 
     } catch(PDOException $e) {
-        return '{"error":{"text":'. $e->getMessage() .'}}';
+        return '{"error":{"text":"'.$e->getMessage().'"}}';
     }
 }
 
@@ -160,7 +160,7 @@ function _getRows($sql){
         return $result;
 
     } catch(PDOException $e) {
-        return '{"error":{"text":'. $e->getMessage() .'}}';
+        return '{"error":{"text":"'.$e->getMessage().'"}}';
     }
 }
 
@@ -174,7 +174,7 @@ function _addRow($sql){
         return '{"message":"Row added successfully"}';
 
     } catch(PDOException $e) {
-        return '{"error":{"text":'. $e->getMessage() .'}}';
+        return '{"error":{"text":"'.$e->getMessage().'"}}';
     }
 }
 
@@ -188,7 +188,7 @@ function _updateRow($sql){
         return '{"message":"Row updated successfully"}';
 
     } catch(PDOException $e) {
-        return '{"error":{"text":'. $e->getMessage() .'}}';
+        return '{"error":{"text":"'.$e->getMessage().'"}}';
     }
 }
 
