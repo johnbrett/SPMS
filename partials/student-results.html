@@ -1,5 +1,5 @@
 <div class="container-narrow">
-  <div class="masthead">
+  <div class="header">
     <ul class="nav nav-pills pull-right">
       <li class="active"><a href="#">Home</a></li>
       <li><a href="https://github.com/mysterbret/SPMS#readme">About</a></li>
@@ -8,16 +8,16 @@
     <h3 class="muted">SPMS</h3>
   </div>
   <hr>
-  <div class="jumbotron">
-    <h1>Student Progress Monitoring System</h1>
+  <div class="banner">
+    <h2>Student Progress Monitoring System</h2>
     <p class="lead">Welcome to this student progress monitoring system demo. Feel free to use the controls below to view and input data to the system. More features are currently in development.</p>
   </div>
   <hr>
-  <div class="row-fluid marketing">
+  <div class="row-fluid result">
   	<form>
   		Select Student to View Results: 
 		<select ng-model="selectedStudent" ng-options="student.firstName + ' ' + student.lastName + ' ' + student.id for student in students" data-ng-init="getStudents()" ng-change="getStudentResults(selectedStudent.id)"></select>
-	<form>
+	</form>
 	<table id="resultTable" ng-show="studentResults" class="table table-striped table-condensed">
 		<thead>
 			<tr>
@@ -36,7 +36,4 @@
 	</table>
   </div>
   <hr>
-  <div class="footer">
-    <p>&copy; <a href="https://github.com/mysterbret/SPMS">SPMS Source Code</a> 2013</p>
-  </div>
 </div>
