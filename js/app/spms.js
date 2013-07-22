@@ -4,7 +4,7 @@ var spms = angular.module('spms', ['restangular']).config(function(RestangularPr
 	})
 
 //TODO -  split up controller logic into explicit controllers for their functions
-spms.controller('RESTCtrl', function($scope, Restangular){
+spms.controller('SessionCtrl', function($scope, Restangular){
 
 	$scope.templates = 
 		[ { name: 'auth', url: 'partials/auth.html'}
@@ -29,6 +29,9 @@ spms.controller('RESTCtrl', function($scope, Restangular){
 			$scope.template = $scope.templates[0]	
 		})
 	}
+})
+
+spms.controller('RESTCtrl', function($scope, Restangular){
 
 	$scope.checkSession = function(){
 		$scope.validSession = Restangular.all("auth").getList()
