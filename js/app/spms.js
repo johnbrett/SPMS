@@ -1,4 +1,4 @@
-var spms = angular.module('spms', ['restangular']).config(function(RestangularProvider, $httpProvider){
+var spms = angular.module('spms', ['restangular', 'angles']).config(function(RestangularProvider, $httpProvider){
 		RestangularProvider.setBaseUrl('./router.php')
 		$httpProvider.defaults.headers.post  = {'Content-Type': 'application/x-www-form-urlencoded'};
 	})
@@ -6,7 +6,7 @@ var spms = angular.module('spms', ['restangular']).config(function(RestangularPr
 //TODO -  split up controller logic into explicit controllers for their functions
 spms.controller('SessionCtrl', function($scope, Restangular){
 
-	$scope.templates = 
+ 	$scope.templates = 
 		[ { name: 'auth', url: 'partials/auth.html'}
 		, { name: 'student-results', url: 'partials/student-results.html'} ]
 	$scope.template = $scope.templates[0]
@@ -32,6 +32,26 @@ spms.controller('SessionCtrl', function($scope, Restangular){
 })
 
 spms.controller('RESTCtrl', function($scope, Restangular){
+
+	$scope.chart = {
+		labels : [],
+		datasets : [
+			{
+				fillColor : "rgba(151,187,205,0)",
+				strokeColor : "#e67e22",
+				pointColor : "rgba(151,187,205,0)",
+				pointStrokeColor : "#e67e22",
+				data : []
+			}
+		]
+	}
+
+	$scope.options = {
+		scaleOverride : true,
+		scaleSteps : 5,
+		scaleStepWidth: 20,
+		scaleStartValue: 0
+	}
 
 	$scope.checkSession = function(){
 		$scope.validSession = Restangular.all("auth").getList()
@@ -60,6 +80,18 @@ spms.controller('RESTCtrl', function($scope, Restangular){
 
 	$scope.getStudentResults = function(id) {
 		$scope.studentResults = Restangular.one("student", id).all("result").getList()
+
+		var marks = [];
+		var labs = [];
+		$scope.studentResults.then( function(results){
+			for(var i=0; i<results.length; i++){
+				marks.push(+results[i].mark) //+ to cast to string
+				labs.push("Lab "+(i+1));
+			}
+		})
+		$scope.chart.labels = labs;
+		$scope.chart.datasets[0].data = marks;
+		$scope.showGraph = true;
 	}
 
 	$scope.addResults = function(id, lab_id, mark, colour)	{
