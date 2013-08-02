@@ -13,12 +13,12 @@ spms.controller('SessionCtrl', function($scope, Restangular){
 
 	$scope.createSession = function(username, password)	{
 		Restangular.all("auth").post("PHP_AUTH_USER=" + username +"&PHP_AUTH_PW=" + password).then(function(result){
-			if(result.valid === 'true') {
+			if(result.valid === "true") {
 				$scope.userSession = result
 				$scope.template = $scope.templates[1]
 			} else {
 				$scope.loginMessage = "User Login Failed"
-				$scope.template = $scope.templates[0]		
+				$scope.template = $scope.templates[0]
 			}
 		})
 	}
@@ -33,7 +33,7 @@ spms.controller('SessionCtrl', function($scope, Restangular){
 
 spms.controller('RESTCtrl', function($scope, Restangular){
 
-	$scope.chart = {
+	$scope.barchart = {
 		labels : [],
 		datasets : [
 			{
@@ -50,7 +50,9 @@ spms.controller('RESTCtrl', function($scope, Restangular){
 		scaleOverride : true,
 		scaleSteps : 5,
 		scaleStepWidth: 20,
-		scaleStartValue: 0
+		scaleStartValue: 0,
+        animationSteps: 60,
+        animationEasing: "easeOutQuart"
 	}
 
 	$scope.checkSession = function(){
@@ -83,14 +85,32 @@ spms.controller('RESTCtrl', function($scope, Restangular){
 
 		var marks = [];
 		var labs = [];
+        var colours = [
+            {
+                value : 0,
+                color: "#00CC00"
+            },
+            {
+                value : 0,
+                color: "#FF9900"
+            },
+            {
+                value : 0,
+                color: "#CC0000"
+            }
+        ]
 		$scope.studentResults.then( function(results){
 			for(var i=0; i<results.length; i++){
-				marks.push(+results[i].mark) //+ to cast to string
+                marks.push(+results[i].mark) //+ to cast to string
 				labs.push("Lab "+(i+1));
+                if(results[i].colour=="green") $scope.piechart[0].value++;
+                else if(results[i].colour=="orange") $scope.piechart[1].value++;
+                else if(results[i].colour=="red") $scope.piechart[2].value++;
 			}
 		})
-		$scope.chart.labels = labs;
-		$scope.chart.datasets[0].data = marks;
+		$scope.barchart.labels = labs;
+		$scope.barchart.datasets[0].data = marks;
+        $scope.piechart = colours;
 		$scope.showGraph = true;
 	}
 
