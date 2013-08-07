@@ -70,5 +70,19 @@ body {
 
 .footer {
   position: absolute;
-  /*bottom: 0;*/
+}
+
+#graphContainer canvas {
+    margin: 5%;
+}
+
+@media (max-width: 767px) {
+    #graphContainer {
+        display: none;
+    }
+}
+@media (max-width: 979px) and (min-width: 768px) {
+    #graphContainer canvas{
+        margin: 4%;
+    }
 }

@@ -45,7 +45,7 @@ spms.controller('RESTCtrl', function($scope, Restangular){
 			}
 		]
 	}
-
+    $scope.piechart = [];
 	$scope.options = {
 		scaleOverride : true,
 		scaleSteps : 5,

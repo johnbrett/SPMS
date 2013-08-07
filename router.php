@@ -202,11 +202,12 @@ function _parseJSON($array){
 }
 
 function _getConnection() {
-    $dbhost="127.0.0.1";
-    $dbuser="root";
-    $dbpass="";
-    $dbname="spms";
-    $dbh = new PDO("mysql:host=$dbhost;dbname=$dbname", $dbuser, $dbpass);  
+    $db = parse_ini_file('config.ini');
+    $dbhost=$db['dbhost'];
+    $dbuser=$db['dbuser'];
+    $dbpass=$db['dbpass'];
+    $dbname=$db['dbname'];
+    $dbh = new PDO("mysql:host=$dbhost;dbname=$dbname", $dbuser, $dbpass);
     $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     return $dbh;
 }

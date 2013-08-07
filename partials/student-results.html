@@ -39,9 +39,9 @@
   		</tbody>
   	</table>
     <hr>
-    <div ng-show="showGraph">
-      <canvas barchart data="barchart" height="300" options="options"></canvas>
-      <canvas piechart data="piechart" height="300" options="options" style="margin-left: 16%;"></canvas>
+    <div ng-show="showGraph" id="graphContainer">
+      <canvas barchart data="barchart" width="300" options="options"></canvas>
+      <canvas piechart data="piechart" width="300" options="options"></canvas>
     </div>
   </div>
   <hr>
