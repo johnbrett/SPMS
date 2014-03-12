@@ -3,13 +3,22 @@ var spms = angular.module('spms', ['restangular', 'angles']).config(function(Res
 		$httpProvider.defaults.headers.post  = {'Content-Type': 'application/x-www-form-urlencoded'};
 	})
 
-//TODO -  split up controller logic into explicit controllers for their functions
 spms.controller('SessionCtrl', function($scope, Restangular){
 
  	$scope.templates = 
 		[ { name: 'auth', url: 'partials/auth.html'}
-		, { name: 'student-results', url: 'partials/student-results.html'} ]
-	$scope.template = $scope.templates[0]
+		, { name: 'student-results', url: 'partials/student-results.html'} ]	
+
+	$scope.checkSession = function() {
+		Restangular.all("auth").getList().then(function(result){
+			console.log(result)
+			if(result[0]) {
+				$scope.template = $scope.templates[0]
+			} else {
+				$scope.template = $scope.templates[1]
+			}
+		})
+	}
 
 	$scope.createSession = function(username, password)	{
 		Restangular.all("auth").post("PHP_AUTH_USER=" + username +"&PHP_AUTH_PW=" + password).then(function(result){

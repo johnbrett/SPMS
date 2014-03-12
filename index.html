@@ -14,7 +14,7 @@
     <link rel="shortcut icon" href="./bootstrap/ico/favicon.png">
   </head>
   <body ng-app='spms'>
-    <div class="container" ng-controller="SessionCtrl">
+    <div class="container" ng-controller="SessionCtrl" data-ng-init="checkSession()">
         <div ng-include src="template.url"></div>
         <div class="footer">
             <p>&copy; <a href="https://github.com/mysterbret/SPMS">SPMS Source Code</a> 2013</p>
