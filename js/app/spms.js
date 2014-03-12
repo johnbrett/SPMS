@@ -11,7 +11,6 @@ spms.controller('SessionCtrl', function($scope, Restangular){
 
 	$scope.checkSession = function() {
 		Restangular.all("auth").getList().then(function(result){
-			console.log(result)
 			if(result[0]) {
 				$scope.template = $scope.templates[0]
 			} else {
